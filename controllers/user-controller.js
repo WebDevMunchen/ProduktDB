@@ -33,14 +33,14 @@ const login = asyncWrapper(async (req, res, next) => {
     throw new ErrorResponse("Incorrect password!", 403);
   }
 
-  const payload = { id: user._id, userId: user.userId };
+  const payload = { id: user._id, userId: user.userId, role: user.role };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "480m",
   });
 
   res
-    .cookie("access_token", token, { httpOnly: true, maxAge: 28800000 })
+    .cookie("access_token", token, { httpOnly: true, maxAge: 7200000 })
     .json(payload);
 });
 

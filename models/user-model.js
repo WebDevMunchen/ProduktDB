@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const userSchema = new Schema({
   userId: { type: Number, required: true, unique: true },
   password: { type: String, required: true, unique: true, select: false },
+  role: {type: String, enum: ["user", "mucAdmin"], default: "user"}
 });
 
 userSchema.pre("save", async function (next) {

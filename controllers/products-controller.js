@@ -1,7 +1,7 @@
 const Product = require("../models/product-model");
 const asyncWrapper = require("../utils/asyncWrapper");
-const ErrorResponse = require("../utils/errorResponse");
 const nodemailer = require("nodemailer");
+const ErrorResponse = require("../utils/errorResponse");
 
 const getAllProducts = asyncWrapper(async (req, res, next) => {
   const products = await Product.find({}).populate("relatedProduct");
@@ -12,7 +12,9 @@ const getAllProducts = asyncWrapper(async (req, res, next) => {
 const getProductInfo = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
 
-  const product = await Product.findOne({ productNumber: productNumber }).populate("relatedProduct");
+  const product = await Product.findOne({
+    productNumber: productNumber,
+  }).populate("relatedProduct");
 
   if (!product) {
     throw new ErrorResponse("Product not found!", 404);
@@ -24,7 +26,9 @@ const getProductInfo = asyncWrapper(async (req, res, next) => {
 const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
 
-  const product = await Product.findOne({ productNumber }).populate("relatedProduct");
+  const product = await Product.findOne({ productNumber }).populate(
+    "relatedProduct"
+  );
 
   if (!product) {
     throw new ErrorResponse("Product not found!", 404);
@@ -41,12 +45,12 @@ const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
     },
   });
 
-const mailOptions = {
+  const mailOptions = {
     from: {
       name: "Missing Photo",
       address: process.env.USER,
     },
-    to: `denis.hadzipasic@rent.group`,
+    to: process.env.EMAIL_ISSUE_HANDLER,
     subject: "Missing Photo A",
     text: "Missing Photo B",
     html: `
@@ -58,15 +62,39 @@ const mailOptions = {
     `,
   };
 
-  // ✅ Send email
   await transporter.sendMail(mailOptions);
 
-  res.status(200).json({ message: `Product #${productNumber} reported successfully` });
+  product.imageReported = true;
+  await product.save();
+
+  res
+    .status(200)
+    .json({ message: `Product #${productNumber} reported successfully` });
 });
 
+const reportIssue = asyncWrapper(async (req, res, next) => {
+  const { productNumber } = req.params;
+  const { reportedBy, reason } = req.body;
+
+  const product = await Product.findOne({ productNumber });
+
+  if (!product) {
+    throw new ErrorResponse("Product not found!", 404);
+  }
+
+  product.reportedIssues.push({ reportedBy, reason });
+  product.imageReported = true; // optional flag
+  await product.save();
+
+  res.status(200).json({
+    message: `Report added successfully for product #${productNumber}`,
+    reportedIssues: product.reportedIssues,
+  });
+});
 
 module.exports = {
   getProductInfo,
   getAllProducts,
-  reportMissingPhoto
+  reportMissingPhoto,
+  reportIssue,
 };

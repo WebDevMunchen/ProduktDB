@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axiosClient from "../utils/axiosClient";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
@@ -8,37 +9,31 @@ export default function AuthProvider({ children }) {
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
-  const [productId, setProductId] = useState("");
+  const [productId, setProductId] = useState(0);
   const [product, setProduct] = useState(null);
   const [allProducts, setAllProducts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  // if (!productId) {
-  //   setProduct(null);   // reset product when no productId
-  //   return;
-  // }
-
-    // axiosClient
-    //   .get("/user/profile")
-    //   .then((response) => {
-    //     setUser(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     setUser(null);
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
+    axiosClient
+      .get("/user/getProfile")
+      .then((response) => {
+        setUser(response.data);
+      })
+      .catch((error) => {
+        setUser(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
 
     axiosClient
       .get("/products/getAllProducts")
-      .then((res) => {
-        setAllProducts(res.data);
+      .then((response) => {
+        setAllProducts(response.data);
       })
       .catch((err) => {
-        console.log(err);
+        setAllProducts(null);
       });
 
     const url = `/products/getProductInfo/${productId}`;
@@ -47,24 +42,24 @@ export default function AuthProvider({ children }) {
       .get(url)
       .then((response) => {
         setProduct(response.data);
-        console.log(url);
       })
       .catch((error) => {
-        console.log(error);
-           setProduct(null); // in case of error
+        setProduct(null);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, [productId]);
 
-  const login = async (data, redirectUrl) => {
+  const login = (data) => {
     axiosClient
       .post("/user/login", data)
       .then((response) => {
         setUser(response.data);
-        navigate("/");
+        navigate("/produkte/suche");
       })
       .catch((error) => {
-        console.log(error);
+        toast.error("Falsche Anmeldedaten!");
       })
       .finally(() => {
         setIsLoading(false);
@@ -78,9 +73,7 @@ export default function AuthProvider({ children }) {
         setUser(null);
         navigate("/");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   return (
@@ -94,6 +87,9 @@ export default function AuthProvider({ children }) {
           productId,
           product,
           allProducts,
+          isLoading,
+          setIsLoading,
+          setProduct
         }}
       >
         {children}
