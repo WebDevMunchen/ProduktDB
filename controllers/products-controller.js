@@ -83,7 +83,6 @@ const reportIssue = asyncWrapper(async (req, res, next) => {
   }
 
   product.reportedIssues.push({ reportedBy, reason });
-  product.imageReported = true; // optional flag
   await product.save();
 
   res.status(200).json({
@@ -92,9 +91,26 @@ const reportIssue = asyncWrapper(async (req, res, next) => {
   });
 });
 
+const updateStatus = asyncWrapper(async (req, res, next) => {
+  const { currentStatus } = req.body;
+  const { id, reportId } = req.params;
+
+  const product = await Product.findOneAndUpdate(
+    { _id: id, "reportedIssues._id": reportId },
+    { $set: { "reportedIssues.$.currentStatus": currentStatus } },
+    { new: true }
+  );
+
+  if (!product) {
+    return res.status(404).json({ message: "Product or report not found" });
+  }
+
+  res.status(200).json(product);
+});
 module.exports = {
   getProductInfo,
   getAllProducts,
   reportMissingPhoto,
   reportIssue,
+  updateStatus,
 };

@@ -81,7 +81,7 @@ export default function ProductSearch() {
   };
 
   return (
-    <div className="max-w-2xl px-4 mx-auto my-10 font-sans min-h-[100vh]">
+    <div className="max-w-2xl px-4 mx-auto my-10 font-sans">
       <div className="relative w-full">
         <input
           type="text"
@@ -127,7 +127,7 @@ export default function ProductSearch() {
                 d="m21.268 21.053l-18.536.001a1 1 0 0 1-.866-1.5L11.132 3.5a1 1 0 0 1 1.732 0l9.27 16.053a1 1 0 0 1-.866 1.5M11.248 9.545l.116 5.666h1.272l.117-5.666zm.75 8.572c.48 0 .855-.369.855-.832s-.375-.826-.856-.826a.83.83 0 0 0-.85.826c0 .463.375.832.85.832z"
               ></path>
             </svg>
-            <p className="text-3xl font-semibold text-gray-900 tracking-wider pb-3">
+            <p className="text-3xl font-semibold text-gray-900 tracking-wider p-3">
               {product.productNumber}
             </p>
             <button
@@ -196,7 +196,7 @@ export default function ProductSearch() {
               </div>
             </dialog>
           </div>
-          <p className="text-xl font-semibold text-gray-800 mt-3 md:px-16">
+          <p className="text-xl font-semibold text-gray-800 mt-2 md:px-16">
             {product.title}
           </p>
           {!imageError && product.image ? (
@@ -221,7 +221,7 @@ export default function ProductSearch() {
               <button
                 onClick={handleReport}
                 disabled={isLoading}
-                className={`mt-4 px-4 py-2 text-white text-lg rounded-lg transition ${
+                className={`mt-4 mb-8 px-4 py-2 text-white text-lg rounded-lg transition ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-500 hover:bg-red-600"

@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <>
       {!isLoading && (
-        <nav className="flex justify-between lg:justify-between bg-gray-800 text-white w-full">
+        <nav className="flex h-[65px] justify-between lg:justify-between bg-gray-800 text-white w-full">
           <div className="px-2 xl:flex items-center">
             <NavLink to={"/"}>
               <img
@@ -47,6 +47,14 @@ export default function Navbar() {
             </ul>
           ) : (
             <ul className="px-2 xl:px-12 py-3 flex items-center">
+                            <li>
+                <NavLink
+                  to={"/artikel/melden"}
+                  className="flex px-4 mx-auto font-semibold font-heading space-x-12"
+                >
+                  Artikelmeldung
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to={"/"}

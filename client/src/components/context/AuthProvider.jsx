@@ -11,6 +11,7 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [productId, setProductId] = useState(0);
   const [product, setProduct] = useState(null);
+  const [allMissingProductReports, setAllMissingProductReports] = useState(null);
   const [allProducts, setAllProducts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,6 +43,19 @@ export default function AuthProvider({ children }) {
       .get(url)
       .then((response) => {
         setProduct(response.data);
+      })
+      .catch((error) => {
+        setProduct(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+
+    axiosClient
+      .get("/missingProduct/getAllMissingProductReports")
+      .then((response) => {
+        setAllMissingProductReports(response.data);
       })
       .catch((error) => {
         setProduct(null);
@@ -89,7 +103,10 @@ export default function AuthProvider({ children }) {
           allProducts,
           isLoading,
           setIsLoading,
-          setProduct
+          setProduct,
+          setAllProducts,
+          allMissingProductReports,
+          setAllMissingProductReports
         }}
       >
         {children}

@@ -4,13 +4,17 @@ import ProductSearch from "./components/ProductSearch";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
 import { Bounce, ToastContainer } from "react-toastify";
+import Dashboard from "./components/administrator/Dashboard";
+import MissingProduct from "./components/MissingProduct";
+import PhotoReports from "./components/administrator/PhotoReports";
+import ProductReports from "./components/administrator/ProductReports";
 
 function App() {
   return (
     <>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick={false}
@@ -27,7 +31,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/" element={<Protected />}>
-          <Route path="/produkte/suche" element={<ProductSearch />} />
+          <Route path="/artikel/suche" element={<ProductSearch />} />
+          <Route path="/artikel/melden" element={<MissingProduct />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/foto-meldungen" element={<PhotoReports />} />
+          <Route path="/artikel-meldungen" element={<ProductReports />} />
         </Route>
       </Routes>
     </>

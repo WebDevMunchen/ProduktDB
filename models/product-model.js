@@ -5,8 +5,8 @@ const reportSchema = new Schema(
     reportedAt: { type: Date, default: Date.now }, 
     reportedBy: { type: String, required: true},                  
     reason: { type: String, required: true }, 
+    currentStatus: { type: String, enum: ["neu", "erledigt", "in Arbeit", "irrelevant"], default: "neu", required: true }, 
   },
-  { _id: false } 
 );
 
 const productSchema = new Schema({

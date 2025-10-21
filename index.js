@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const userRouter = require("./routes/user-route.js");
 const productsRouter = require("./routes/products-route.js");
 const errorHandler = require("./middlewares/errorHandler.js");
+const missingProductRouter = require("./routes/missingProduct-route.js");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 
 app.use("/api/user", userRouter);
 app.use("/api/products", productsRouter);
+app.use("/api/missingProduct", missingProductRouter);
 
 app.use(errorHandler);
 
