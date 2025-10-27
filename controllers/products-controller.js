@@ -2,6 +2,7 @@ const Product = require("../models/product-model");
 const asyncWrapper = require("../utils/asyncWrapper");
 const nodemailer = require("nodemailer");
 const ErrorResponse = require("../utils/errorResponse");
+const User = require("../models/user-model");
 
 const getAllProducts = asyncWrapper(async (req, res, next) => {
   const products = await Product.find({}).populate("relatedProduct");
@@ -25,10 +26,13 @@ const getProductInfo = asyncWrapper(async (req, res, next) => {
 
 const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
+  const {userId} = req.user
 
   const product = await Product.findOne({ productNumber }).populate(
     "relatedProduct"
   );
+
+  const user = await User.findOne({userId})
 
   if (!product) {
     throw new ErrorResponse("Product not found!", 404);
@@ -65,6 +69,9 @@ const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
   await transporter.sendMail(mailOptions);
 
   product.imageReported = true;
+  product.reportedAt = Date.now()
+  product.reportedBy = user.userId
+  product.currentStatus = "neu"
   await product.save();
 
   res
@@ -93,13 +100,10 @@ const reportIssue = asyncWrapper(async (req, res, next) => {
 
 const updateStatus = asyncWrapper(async (req, res, next) => {
   const { currentStatus } = req.body;
-  const { id, reportId } = req.params;
+  const { id } = req.params;
 
-  const product = await Product.findOneAndUpdate(
-    { _id: id, "reportedIssues._id": reportId },
-    { $set: { "reportedIssues.$.currentStatus": currentStatus } },
-    { new: true }
-  );
+  const product = await Product.findByIdAndUpdate(id, 
+    {currentStatus})
 
   if (!product) {
     return res.status(404).json({ message: "Product or report not found" });

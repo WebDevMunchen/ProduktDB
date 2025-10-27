@@ -13,6 +13,7 @@ export default function MissingProduct() {
   } = useForm();
 
   const onSubmit = (data) => {
+    isSubmitting(false)
     axiosClient
       .post("/missingProduct/reportmissingProduct", data)
       .then(() => {

@@ -20,5 +20,5 @@ productsRouter
 productsRouter
   .route("/reportIssue/:productNumber")
   .post(authenticate, reportIssue);
-productsRouter.put("/reports/:id/updateStatus/:reportId", updateStatus);
+productsRouter.put("/updateStatus/:id", updateStatus);
 module.exports = productsRouter;
