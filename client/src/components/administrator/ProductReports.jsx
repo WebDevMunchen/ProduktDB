@@ -29,8 +29,6 @@ export default function ProductReports() {
       });
   };
 
-  console.log(allMissingProductReports);
-
   const groupedReports = allMissingProductReports
     ? allMissingProductReports.reduce((acc, report) => {
         const { productNumber } = report;

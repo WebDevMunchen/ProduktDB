@@ -5,12 +5,14 @@ const {
   reportMissingPhoto,
   reportIssue,
   updateStatus,
+  paginatedProducts,
 } = require("../controllers/products-controller");
 const { authenticate } = require("../middlewares/authentication");
 
 const productsRouter = express.Router();
 
 productsRouter.route("/getAllProducts").get(authenticate, getAllProducts);
+productsRouter.route("/getPaginatedProducts").get(authenticate, paginatedProducts);
 productsRouter
   .route("/getProductInfo/:productNumber")
   .get(authenticate, getProductInfo);

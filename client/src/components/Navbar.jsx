@@ -5,8 +5,6 @@ import { AuthContext } from "./context/AuthProvider";
 export default function Navbar() {
   const { isLoading, user, logout } = useContext(AuthContext);
 
-  console.log(user);
-
   return (
     <>
       {!isLoading && (

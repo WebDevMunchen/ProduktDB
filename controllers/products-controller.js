@@ -10,6 +10,17 @@ const getAllProducts = asyncWrapper(async (req, res, next) => {
   res.status(200).json(products);
 });
 
+const paginatedProducts = asyncWrapper(async (req, res, next) => {
+  const { skip = 0, limit = 10 } = req.query;
+
+  const products = await Product.find({})
+    .skip(Number(skip))
+    .limit(Number(limit))
+    .populate("relatedProduct");
+
+  res.status(200).json(products);
+});
+
 const getProductInfo = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
 
@@ -26,13 +37,13 @@ const getProductInfo = asyncWrapper(async (req, res, next) => {
 
 const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
-  const {userId} = req.user
+  const { userId } = req.user;
 
   const product = await Product.findOne({ productNumber }).populate(
     "relatedProduct"
   );
 
-  const user = await User.findOne({userId})
+  const user = await User.findOne({ userId });
 
   if (!product) {
     throw new ErrorResponse("Product not found!", 404);
@@ -69,9 +80,9 @@ const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
   await transporter.sendMail(mailOptions);
 
   product.imageReported = true;
-  product.reportedAt = Date.now()
-  product.reportedBy = user.userId
-  product.currentStatus = "neu"
+  product.reportedAt = Date.now();
+  product.reportedBy = user.userId;
+  product.currentStatus = "neu";
   await product.save();
 
   res
@@ -102,8 +113,7 @@ const updateStatus = asyncWrapper(async (req, res, next) => {
   const { currentStatus } = req.body;
   const { id } = req.params;
 
-  const product = await Product.findByIdAndUpdate(id, 
-    {currentStatus})
+  const product = await Product.findByIdAndUpdate(id, { currentStatus });
 
   if (!product) {
     return res.status(404).json({ message: "Product or report not found" });
@@ -114,6 +124,7 @@ const updateStatus = asyncWrapper(async (req, res, next) => {
 module.exports = {
   getProductInfo,
   getAllProducts,
+  paginatedProducts,
   reportMissingPhoto,
   reportIssue,
   updateStatus,

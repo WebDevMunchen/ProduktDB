@@ -8,6 +8,9 @@ import Dashboard from "./components/administrator/Dashboard";
 import MissingProduct from "./components/MissingProduct";
 import PhotoReports from "./components/administrator/PhotoReports";
 import ProductReports from "./components/administrator/ProductReports";
+import UserList from "./components/administrator/UserList";
+import Register from "./components/administrator/Register";
+import Products from "./components/administrator/Products";
 
 function App() {
   return (
@@ -31,6 +34,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/" element={<Protected />}>
+          <Route path="/benutzer" element={<UserList />} />
+          <Route path="/benutzer/registrieren" element={<Register />} />
+          <Route path="/artikel" element={<Products />} />
           <Route path="/artikel/suche" element={<ProductSearch />} />
           <Route path="/artikel/melden" element={<MissingProduct />} />
           <Route path="/dashboard" element={<Dashboard />} />

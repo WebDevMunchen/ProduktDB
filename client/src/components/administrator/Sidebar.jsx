@@ -1,11 +1,16 @@
 import { NavLink } from "react-router-dom";
-import { activeLink, baseLink, hoverLink, inactiveLink } from "../../styles/sidebarLink";
+import {
+  activeLink,
+  baseLink,
+  hoverLink,
+  inactiveLink,
+} from "../../styles/sidebarLink";
 
 export default function Sidebar() {
   return (
     <div className="min-w-[200px] max-w-[150px] max-h-[calc(100vh-65px)] bg-gray-800">
       <div className="flex flex-col items-center justify-center my-8 mx-2">
- <NavLink
+        <NavLink
           to="/benutzer"
           className={({ isActive }) =>
             `${baseLink} ${hoverLink} ${isActive ? activeLink : inactiveLink}`
@@ -13,7 +18,14 @@ export default function Sidebar() {
         >
           Benutzer
         </NavLink>
-
+        <NavLink
+          to="/artikel"
+          className={({ isActive }) =>
+            `${baseLink} ${hoverLink} ${isActive ? activeLink : inactiveLink}`
+          }
+        >
+          Artikel
+        </NavLink>
         <NavLink
           to="/foto-meldungen"
           className={({ isActive }) =>

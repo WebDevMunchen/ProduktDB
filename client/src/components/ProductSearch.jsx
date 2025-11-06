@@ -203,7 +203,7 @@ export default function ProductSearch() {
             <img
               src={`${product.image}?v=${Date.now()}`}
               alt={`Product ${product.productNumber}`}
-              className="w-full max-h-[100%] object-contain rounded-lg"
+              className="w-full max-h-[100%] object-contain rounded-md"
               onError={() => setImageError(true)}
             />
           ) : product.imageReported ? (
@@ -221,7 +221,7 @@ export default function ProductSearch() {
               <button
                 onClick={handleReport}
                 disabled={isLoading}
-                className={`mt-4 mb-8 px-4 py-2 text-white text-lg rounded-lg transition ${
+                className={`mt-4 mb-8 px-4 py-2 text-white text-lg rounded-md transition ${
                   isLoading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-500 hover:bg-red-600"

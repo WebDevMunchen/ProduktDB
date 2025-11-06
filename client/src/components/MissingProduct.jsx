@@ -25,7 +25,7 @@ export default function MissingProduct() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-semibold mb-4 text-center">
         Fehlendes Artikel melden
       </h2>

@@ -13,6 +13,7 @@ export default function AuthProvider({ children }) {
   const [product, setProduct] = useState(null);
   const [allMissingProductReports, setAllMissingProductReports] = useState(null);
   const [allProducts, setAllProducts] = useState(null);
+  const [paginatedProducts, setPaginatedProducts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,10 +29,20 @@ export default function AuthProvider({ children }) {
         setIsLoading(false);
       });
 
+
     axiosClient
       .get("/products/getAllProducts")
       .then((response) => {
         setAllProducts(response.data);
+      })
+      .catch((err) => {
+        setAllProducts(null);
+      });
+
+          axiosClient
+      .get("/products/getPaginatedProducts")
+      .then((response) => {
+        setPaginatedProducts(response.data);
       })
       .catch((err) => {
         setAllProducts(null);
@@ -51,7 +62,6 @@ export default function AuthProvider({ children }) {
         setIsLoading(false);
       });
 
-
     axiosClient
       .get("/missingProduct/getAllMissingProductReports")
       .then((response) => {
@@ -70,7 +80,7 @@ export default function AuthProvider({ children }) {
       .post("/user/login", data)
       .then((response) => {
         setUser(response.data);
-        navigate("/produkte/suche");
+        navigate("/artikel/suche");
       })
       .catch((error) => {
         toast.error("Falsche Anmeldedaten!");
@@ -106,7 +116,8 @@ export default function AuthProvider({ children }) {
           setProduct,
           setAllProducts,
           allMissingProductReports,
-          setAllMissingProductReports
+          setAllMissingProductReports,
+          paginatedProducts,
         }}
       >
         {children}
