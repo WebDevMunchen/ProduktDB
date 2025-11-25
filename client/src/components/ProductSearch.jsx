@@ -242,9 +242,9 @@ export default function ProductSearch() {
               </h3>
               <div
                 className={`flex ${
-                  product.relatedProduct.length <= 2
+                  product.relatedProduct.length <= 3
                     ? "justify-center gap-4"
-                    : "justify-start gap-4 overflow-x-auto md:justify-center"
+                    : "justify-start gap-4 overflow-x-auto"
                 }`}
               >
                 {product.relatedProduct.map((rp) => (
@@ -256,13 +256,61 @@ export default function ProductSearch() {
                       setInputValue(rp.productNumber);
                     }}
                   >
+                    {rp.internProduct === true ? (
+                      <div
+                        className="tooltip flex justify-end z-[9999] tooltip-bottom"
+                        data-tip="Bitte beachten, dass es sich hierbei um eine interne Artikelnummer & Artikelbezeichnung handelt, die nicht in AGP vorhanden sind!"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={32}
+                          height={32}
+                          viewBox="0 0 24 24"
+                          className="text-red-500"
+                        >
+                          <path
+                            fill="currentColor"
+                            fillRule="evenodd"
+                            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836l.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836l-.042.02a.75.75 0 1 1-.671-1.34zM12 9a.75.75 0 1 0 0-1.5a.75.75 0 0 0 0 1.5"
+                            clipRule="evenodd"
+                            strokeWidth={0.6}
+                            stroke="currentColor"
+                          ></path>
+                        </svg>
+                      </div>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={24}
+                        height={24}
+                        viewBox="0 0 24 24"
+                        className="invisible"
+                      >
+                        <path
+                          fill="currentColor"
+                          fillRule="evenodd"
+                          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12m8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836l.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836l-.042.02a.75.75 0 1 1-.671-1.34zM12 9a.75.75 0 1 0 0-1.5a.75.75 0 0 0 0 1.5"
+                          clipRule="evenodd"
+                          strokeWidth={0.6}
+                          stroke="currentColor"
+                        ></path>
+                      </svg>
+                    )}
                     <img
                       src={`${rp.image}?v=${Date.now()}`}
                       alt={`Related Product ${rp.productNumber}`}
                       className="w-full h-32 object-contain rounded-md mb-2"
                     />
-                    <p className="text-md font-medium text-gray-700 mt-2">
-                      {rp.productNumber}
+                    <p
+                      className={`text-md font-medium text-gray-700 mt-2 ${
+                        rp.internProduct === true
+                          ? "text-red-500"
+                          : "text-gray-900"
+                      }`}
+                    >
+                      {rp.internProduct === true
+                        ? "IA - " + rp.productNumber
+                        : rp.productNumber}
                     </p>
                   </div>
                 ))}

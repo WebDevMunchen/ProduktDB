@@ -10,16 +10,27 @@ const getAllProducts = asyncWrapper(async (req, res, next) => {
   res.status(200).json(products);
 });
 
-const paginatedProducts = asyncWrapper(async (req, res, next) => {
-  const { skip = 0, limit = 10 } = req.query;
+const getProductList = asyncWrapper(async (req, res, next) => {
+  const { skip = 0, limit = 10, search = "" } = req.query;
 
-  const products = await Product.find({})
+  const filter = {};
+
+  if (search) {
+    if (!isNaN(search)) {
+      filter.productNumber = Number(search);
+    } else {
+      filter.title = { $regex: search, $options: "i" };
+    }
+  }
+
+  const products = await Product.find(filter)
     .skip(Number(skip))
     .limit(Number(limit))
     .populate("relatedProduct");
 
   res.status(200).json(products);
 });
+
 
 const getProductInfo = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
@@ -33,6 +44,30 @@ const getProductInfo = asyncWrapper(async (req, res, next) => {
   }
 
   res.status(200).json(product);
+});
+
+const getProductPreview = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+
+  const product = await Product.findById(id).populate("relatedProduct");
+
+  if (!product) {
+    throw new ErrorResponse("Product not found!", 404);
+  }
+
+  res.status(200).json(product);
+});
+
+const deleteProduct = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+
+  const product = await Product.findByIdAndDelete(id)
+
+  if (!product) {
+    throw new ErrorResponse("Product not found!", 404);
+  }
+
+  res.status(200).json({message: "Product deleted!"});
 });
 
 const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
@@ -121,11 +156,81 @@ const updateStatus = asyncWrapper(async (req, res, next) => {
 
   res.status(200).json(product);
 });
+
+const createProduct = asyncWrapper(async (req, res, next) => {
+  const {
+    productNumber,
+    title,
+    image,
+    storageLocation,
+    notes,
+    relatedProduct,
+    internProduct
+  } = req.body;
+
+  const findProduct = await Product.findOne({ productNumber });
+
+  if (findProduct) {
+    throw new ErrorResponse("Product number already exists!", 409);
+  }
+
+  const product = await Product.create({
+    productNumber,
+    title,
+    image,
+    storageLocation,
+    notes,
+    relatedProduct,
+    internProduct
+
+  });
+
+  res.status(201).json(product);
+});
+
+const updateProduct = asyncWrapper(async (req, res, next) => {
+  const {id} = req.params
+  const {productNumber: pNumber} = req.params
+  const {
+    productNumber,
+    title,
+    image,
+    storageLocation,
+    notes,
+    relatedProduct,
+    internProduct
+
+  } = req.body;
+
+  const findProduct = await Product.findOne({ pNumber });
+
+  if (!findProduct) {
+    throw new ErrorResponse("Product not found!", 404);
+  }
+
+  const updatedProduct = await Product.findByIdAndUpdate(id, {
+    productNumber,
+    title,
+    image,
+    storageLocation,
+    notes,
+    relatedProduct,
+    internProduct
+
+  });
+
+  res.status(201).json(updatedProduct);
+});
+
 module.exports = {
   getProductInfo,
   getAllProducts,
-  paginatedProducts,
+  getProductList,
   reportMissingPhoto,
   reportIssue,
   updateStatus,
+  createProduct,
+  getProductPreview,
+  deleteProduct,
+  updateProduct
 };

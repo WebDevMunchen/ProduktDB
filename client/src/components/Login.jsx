@@ -10,9 +10,15 @@ export default function Login() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(user) {
-      navigate("/produkte/suche")
+    if(user && user.role === "user") {
+
+      navigate("/artikel/suche")
+    } else if(user && user.role === "mucAdmin"){
+      navigate("/admin/dashboard")
+    } else {
+      return
     }
+
   }, [user, navigate])
 
   const {

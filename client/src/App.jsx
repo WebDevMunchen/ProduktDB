@@ -11,6 +11,13 @@ import ProductReports from "./components/administrator/ProductReports";
 import UserList from "./components/administrator/UserList";
 import Register from "./components/administrator/Register";
 import Products from "./components/administrator/Products";
+import CreateProduct from "./components/administrator/CreateProduct";
+import UserUpdate from "./components/administrator/UserUpdate";
+import ProductUpdate from "./components/administrator/ProductUpdate";
+import Authorize from "./components/protectedRoutes/Authorize";
+import ActivationSuccess from "./components/ActivationSuccess";
+import ActivationError from "./components/ActivationError";
+import ActivationExpired from "./components/ActivationExpired";
 
 function App() {
   return (
@@ -33,15 +40,24 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/activation-success" element={<ActivationSuccess />} />
+        <Route path="/activation-error" element={<ActivationError />} />
+        <Route path="/activation-expired" element={<ActivationExpired />} />
+
         <Route path="/" element={<Protected />}>
-          <Route path="/benutzer" element={<UserList />} />
-          <Route path="/benutzer/registrieren" element={<Register />} />
-          <Route path="/artikel" element={<Products />} />
           <Route path="/artikel/suche" element={<ProductSearch />} />
           <Route path="/artikel/melden" element={<MissingProduct />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/foto-meldungen" element={<PhotoReports />} />
-          <Route path="/artikel-meldungen" element={<ProductReports />} />
+          <Route path="/admin" element={<Authorize role="mucAdmin" />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="artikel/artikelAnlegen" element={<CreateProduct />} />
+            <Route path="foto-meldungen" element={<PhotoReports />} />
+            <Route path="artikel-meldungen" element={<ProductReports />} />
+            <Route path="benutzer" element={<UserList />} />
+            <Route path="benutzer/registrieren" element={<Register />} />
+            <Route path="benutzer/bearbeiten/:id" element={<UserUpdate />} />
+            <Route path="artikel" element={<Products />} />
+            <Route path="artikel/bearbeiten/:id" element={<ProductUpdate />} />
+          </Route>
         </Route>
       </Routes>
     </>

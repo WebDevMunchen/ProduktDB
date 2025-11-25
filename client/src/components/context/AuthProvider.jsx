@@ -11,9 +11,9 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [productId, setProductId] = useState(0);
   const [product, setProduct] = useState(null);
-  const [allMissingProductReports, setAllMissingProductReports] = useState(null);
+  const [allMissingProductReports, setAllMissingProductReports] =
+    useState(null);
   const [allProducts, setAllProducts] = useState(null);
-  const [paginatedProducts, setPaginatedProducts] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -29,20 +29,10 @@ export default function AuthProvider({ children }) {
         setIsLoading(false);
       });
 
-
     axiosClient
       .get("/products/getAllProducts")
       .then((response) => {
         setAllProducts(response.data);
-      })
-      .catch((err) => {
-        setAllProducts(null);
-      });
-
-          axiosClient
-      .get("/products/getPaginatedProducts")
-      .then((response) => {
-        setPaginatedProducts(response.data);
       })
       .catch((err) => {
         setAllProducts(null);
@@ -68,7 +58,7 @@ export default function AuthProvider({ children }) {
         setAllMissingProductReports(response.data);
       })
       .catch((error) => {
-        setProduct(null);
+        setAllMissingProductReports(null);
       })
       .finally(() => {
         setIsLoading(false);
@@ -80,10 +70,23 @@ export default function AuthProvider({ children }) {
       .post("/user/login", data)
       .then((response) => {
         setUser(response.data);
-        navigate("/artikel/suche");
+        return axiosClient.get("/missingProduct/getAllMissingProductReports");
+      })
+      .then((response) => {
+        setAllMissingProductReports(response.data);
+        return axiosClient.get("/products/getAllProducts");
+      })
+      .then((response) => {
+        setAllProducts(response.data);
       })
       .catch((error) => {
-        toast.error("Falsche Anmeldedaten!");
+        if (error.status === 423) {
+          toast.error("Account gesperrt!");
+        } else if (error.status === 401) {
+          toast.info("Account noch nicht verifiziert");
+        } else {
+          toast.error("Falsche Anmeldedaten!");
+        }
       })
       .finally(() => {
         setIsLoading(false);
@@ -117,7 +120,6 @@ export default function AuthProvider({ children }) {
           setAllProducts,
           allMissingProductReports,
           setAllMissingProductReports,
-          paginatedProducts,
         }}
       >
         {children}
