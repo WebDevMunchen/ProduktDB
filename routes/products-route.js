@@ -3,7 +3,6 @@ const {
   getProductInfo,
   getAllProducts,
   reportMissingPhoto,
-  reportIssue,
   updateStatus,
   getProductList,
   createProduct,
@@ -11,12 +10,14 @@ const {
   deleteProduct,
   updateProduct,
 } = require("../controllers/products-controller");
-const { authenticate } = require("../middlewares/authentication");
+const { authenticate, authorize } = require("../middlewares/authentication");
 
 const productsRouter = express.Router();
 
 productsRouter.route("/getAllProducts").get(authenticate, getAllProducts);
-productsRouter.route("/createProduct").post(authenticate, createProduct);
+productsRouter
+  .route("/createProduct")
+  .post(authenticate, authorize("mucAdmin"), createProduct);
 productsRouter.route("/getProductList").get(authenticate, getProductList);
 productsRouter
   .route("/getProductInfo/:productNumber")
@@ -26,15 +27,12 @@ productsRouter
   .get(authenticate, getProductPreview);
 productsRouter
   .route("/deleteProduct/:id")
-  .delete(authenticate, deleteProduct);
-  productsRouter
+  .delete(authenticate, authorize("mucAdmin"), deleteProduct);
+productsRouter
   .route("/updateProduct/:id")
-  .put(authenticate, updateProduct);
+  .put(authenticate, authorize("mucAdmin"), updateProduct);
 productsRouter
   .route("/reportMissingPhoto/:productNumber")
   .post(authenticate, reportMissingPhoto);
-productsRouter
-  .route("/reportIssue/:productNumber")
-  .post(authenticate, reportIssue);
-productsRouter.put("/updateStatus/:id", updateStatus);
+productsRouter.route("/updateStatus/:id").put(authenticate, authorize("mucAdmin"), updateStatus);
 module.exports = productsRouter;

@@ -46,7 +46,29 @@ export default function PhotoReports() {
       <Sidebar />
       <div className="w-full min-h-[calc(100vh-65px)] max-h-[calc(100vh-65px)] overflow-y-scroll p-4 bg-gray-200">
         {!allProducts ? (
-          <>Loading...</>
+          <div className="py-3 px-4 mt-5 flex flex-row gap-2 justify-center">
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.3s]"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.5s]"></div>
+          </div>
+        ) : allProducts.filter((product) => product.imageReported).length ===
+          0 ? (
+          <div className="flex justify-center mt-12 font-semibold text-xl">
+            <div className="flex flex-col items-center gap-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={48}
+                height={48}
+                viewBox="0 0 1024 1024"
+              >
+                <path
+                  fill="currentColor"
+                  d="m576 736l-32-.001v-286c0-.336-.096-.656-.096-1.008s.096-.655.096-.991c0-17.664-14.336-32-32-32h-64c-17.664 0-32 14.336-32 32s14.336 32 32 32h32v256h-32c-17.664 0-32 14.336-32 32s14.336 32 32 32h128c17.664 0 32-14.336 32-32s-14.336-32-32-32m-64-384.001c35.344 0 64-28.656 64-64s-28.656-64-64-64s-64 28.656-64 64s28.656 64 64 64m0-352c-282.768 0-512 229.232-512 512c0 282.784 229.232 512 512 512c282.784 0 512-229.216 512-512c0-282.768-229.216-512-512-512m0 961.008c-247.024 0-448-201.984-448-449.01c0-247.024 200.976-448 448-448s448 200.977 448 448s-200.976 449.01-448 449.01"
+                ></path>
+              </svg>
+              <p>Derzeit liegen keine Meldungen über fehlende Bilder vor</p>
+            </div>
+          </div>
         ) : (
           allProducts
             .filter((product) => product.imageReported)
@@ -69,7 +91,7 @@ export default function PhotoReports() {
                 }
               >
                 <div className="flex justify-between collapse-title text-gray-700 font-semibold hover:bg-[rgb(252,217,185)] transition-colors px-4 py-2">
-                  <p>Artikelnummer: {product.productNumber}</p>
+                   <p className="font-semibold text-lg">Artikelnummer: <span className="font-bold">{product.productNumber}</span></p>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={24}
@@ -87,15 +109,25 @@ export default function PhotoReports() {
                   <div className="bg-white rounded-md p-2 mt-4 border border-slate-300 w-full">
                     <div className="flex justify-between">
                       <div className="flex flex-col">
-                        <p>
-                          <strong>Verfasser:</strong> {product.reportedBy}
+                        <p className="font-semibold text-gray-700">
+                          <span className="font-bold text-lg">Am:</span> {formatDate(product.reportedAt)}
                         </p>
-                        <p>
-                          <strong>Am:</strong> {formatDate(product.reportedAt)}
+                        <p className="font-semibold text-gray-700">
+                          <span className="font-bold text-lg">Verfasser:</span>{" "}
+                          {product.reportedBy +
+                            " " +
+                            `(${product.reportersId})`}
+                        </p>
+                        <p className="font-semibold text-gray-700">
+                          <span className="font-bold text-lg">Standort:</span> {product.reportersLocation}
+                        </p>
+                        <p className="font-semibold text-gray-700">
+                          <span className="font-bold text-lg">Abteilung:</span>{" "}
+                          {product.reportersDepartment}
                         </p>
                       </div>
 
-                      <div className="flex flex-col items-center justify-center pr-8">
+                      <div className="flex flex-col mt-2 pr-8">
                         <select
                           className={`border-[1px] rounded-md w-[150px] px-2 py-1 appearance-none text-center font-semibold tracking-wide hover:cursor-pointer ${
                             product.currentStatus === "neu"

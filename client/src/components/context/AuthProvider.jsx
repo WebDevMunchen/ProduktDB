@@ -53,8 +53,9 @@ export default function AuthProvider({ children }) {
       });
 
     axiosClient
-      .get("/missingProduct/getAllMissingProductReports")
+      .get("/productReports/getAllProductReports")
       .then((response) => {
+        console.log(response.data)
         setAllMissingProductReports(response.data);
       })
       .catch((error) => {
@@ -70,7 +71,7 @@ export default function AuthProvider({ children }) {
       .post("/user/login", data)
       .then((response) => {
         setUser(response.data);
-        return axiosClient.get("/missingProduct/getAllMissingProductReports");
+        return axiosClient.get("/productReports/getAllProductReports");
       })
       .then((response) => {
         setAllMissingProductReports(response.data);

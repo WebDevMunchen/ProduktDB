@@ -78,7 +78,7 @@ export default function ProductUpdate() {
     }
 
     const filtered = allProducts?.filter((p) =>
-      p.productNumber.toString().startsWith(value)
+      p.productNumber?.toString().startsWith(value)
     );
 
     setSuggestions(filtered || []);

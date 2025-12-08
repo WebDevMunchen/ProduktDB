@@ -61,6 +61,39 @@ const register = asyncWrapper(async (req, res, next) => {
   res.status(201).json(newUser);
 });
 
+const updateUser = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+  const {
+    userId,
+    firstName,
+    lastName,
+    department,
+    location,
+    email,
+    role,
+    status,
+  } = req.body;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new ErrorResponse("User not found!", 404);
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(id, {
+    userId,
+    firstName,
+    lastName,
+    department,
+    location,
+    email,
+    role,
+    status,
+  });
+
+  res.status(201).json(updatedUser);
+});
+
 const login = asyncWrapper(async (req, res, next) => {
   const { userId, password } = req.body;
 
@@ -88,7 +121,15 @@ const login = asyncWrapper(async (req, res, next) => {
     throw new ErrorResponse("Incorrect password!", 403);
   }
 
-  const payload = { id: user._id, userId: user.userId, role: user.role };
+  const payload = {
+    id: user._id,
+    userId: user.userId,
+    role: user.role,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    department: user.department,
+    location: user.location,
+  };
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "480m",
@@ -120,6 +161,18 @@ const getProfile = asyncWrapper(async (req, res, next) => {
   res.json(user);
 });
 
+const getUserInfo = asyncWrapper(async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new ErrorResponse("User not found!", 404);
+  }
+
+  res.json(user);
+});
+
 const getAllUsers = asyncWrapper(async (req, res, next) => {
   const { search, location } = req.query;
 
@@ -139,55 +192,6 @@ const getAllUsers = asyncWrapper(async (req, res, next) => {
   const allUsers = await User.find(filter);
 
   res.status(200).json(allUsers);
-});
-
-const switchUserStatus = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
-
-  const user = await User.findById(id);
-
-  let userStatus = "";
-
-  if (user.status === "aktiv") {
-    userStatus = "inaktiv";
-  } else {
-    userStatus = "aktiv";
-  }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    id,
-    { status: userStatus },
-    { new: true }
-  );
-
-  if (!user) {
-    throw new ErrorResponse("User not found!", 404);
-  }
-
-  res.status(200).json({
-    message: "User status updated to inaktiv successfully!",
-    updatedUser,
-  });
-});
-
-const unlockUserAccount = asyncWrapper(async (req, res, next) => {
-  const { id } = req.params;
-
-  const user = await User.findById(id);
-
-  if (!user) {
-    throw new ErrorResponse("User not found!", 404);
-  }
-  const updatedUser = await User.findByIdAndUpdate(
-    id,
-    { status: "aktiv" },
-    { new: true }
-  );
-
-  res.status(200).json({
-    message: "User status updated to inaktiv successfully!",
-    updatedUser,
-  });
 });
 
 const updatePassword = asyncWrapper(async (req, res, next) => {
@@ -257,7 +261,7 @@ const activateUser = asyncWrapper(async (req, res, next) => {
   try {
     decoded = jwt.verify(token, process.env.ACTIVATION_SECRET);
   } catch (err) {
-  res.redirect(`http://localhost:5173/activation-expired`);
+    res.redirect(`http://localhost:5173/activation-expired`);
 
     throw new ErrorResponse("Invalid or expired activation token!", 400);
   }
@@ -268,7 +272,7 @@ const activateUser = asyncWrapper(async (req, res, next) => {
   }
 
   if (user.status !== "ausstehend") {
-  res.redirect(`http://localhost:5173/activation-error`);
+    res.redirect(`http://localhost:5173/activation-error`);
 
     throw new ErrorResponse("User already active or blocked!", 400);
   }
@@ -285,9 +289,9 @@ module.exports = {
   logout,
   getProfile,
   getAllUsers,
-  switchUserStatus,
   updatePassword,
   sendActivationEmail,
   activateUser,
-  unlockUserAccount,
+  updateUser,
+  getUserInfo,
 };

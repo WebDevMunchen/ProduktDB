@@ -73,7 +73,11 @@ const fetchProducts = async (reset = false) => {
       <Sidebar />
       <div className="w-full min-h-[calc(100vh-65px)] max-h-[calc(100vh-65px)] overflow-y-scroll p-4 bg-gray-200">
         {!productList ? (
-          <>Loading...</>
+                    <div className="py-3 px-4 mt-5 flex flex-row gap-2 justify-center">
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.3s]"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.5s]"></div>
+          </div>
         ) : (
           <div className="flex items-center justify-center w-full">
             <div className="overflow-x-auto w-full bg-white rounded-md">

@@ -13,19 +13,21 @@ export default function MissingProduct() {
   } = useForm();
 
   const onSubmit = (data) => {
-    isSubmitting(false)
+    setIsSubmitting(true);
     axiosClient
-      .post("/missingProduct/reportmissingProduct", data)
+      .post("/productReports/reportMissingProduct", data)
       .then(() => {
         toast.success("Artikel gemeldet!");
       })
       .catch((error) => {
         toast.error("Meldung fehlgeschlagen!");
+      }).finally(() => {
+        setIsSubmitting(false)
       });
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
+    <div className="w-[95%] max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-semibold mb-4 text-center">
         Fehlendes Artikel melden
       </h2>
@@ -76,7 +78,7 @@ export default function MissingProduct() {
               : "bg-yellow-500 hover:bg-yellow-400"
           }`}
         >
-          {isSubmitting ? "Senden..." : "Fehlendes Artikel melden"}
+          {isSubmitting ? "Warten..." : "Fehlendes Artikel melden"}
         </button>
       </form>
     </div>

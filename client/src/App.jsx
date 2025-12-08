@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
+import { Bounce, ToastContainer } from "react-toastify";
 import Protected from "./components/protectedRoutes/Protected";
 import ProductSearch from "./components/ProductSearch";
 import Login from "./components/Login";
 import Navbar from "./components/Navbar";
-import { Bounce, ToastContainer } from "react-toastify";
 import Dashboard from "./components/administrator/Dashboard";
 import MissingProduct from "./components/MissingProduct";
 import PhotoReports from "./components/administrator/PhotoReports";

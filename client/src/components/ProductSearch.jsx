@@ -27,7 +27,7 @@ export default function ProductSearch() {
     }
 
     const filtered = allProducts
-      ?.filter((p) => p.productNumber.toString().startsWith(value))
+      ?.filter((p) => p.productNumber?.toString().startsWith(value))
       .map((p) => p.productNumber);
 
     setSuggestions(filtered || []);
@@ -70,30 +70,33 @@ export default function ProductSearch() {
 
   const onSubmit = async (data) => {
     await axiosClient
-      .post(`/products/reportIssue/${productId}`, data)
+      .post(`/productReports/reportIssue/${productId}`, {
+        ...data,
+        productNumber: productId,
+      })
       .then(() => {
         toast.success("Übermittelt!");
       })
       .catch((error) => {
-        console.error(err);
+        console.error(error);
         toast.error("Fehlgeschlagen!");
       });
   };
 
   return (
-    <div className="max-w-2xl px-4 mx-auto my-10 font-sans">
-      <div className="relative w-full">
+    <div className="px-4 mx-auto my-10 font-sans md:min-w-[750px] md:max-w-[750px]">
+      <div className="w-full">
         <input
           type="text"
           value={inputValue}
           onChange={handleChange}
           onFocus={handleFocus}
           placeholder="Gib die Artikelnummer ein"
-          className="w-full text-center py-2 text-lg border border-gray-300 rounded-t-xl shadow-sm focus:ring-1 outline-none"
+          className="w-full text-center py-2 text-lg border border-gray-300 rounded-t-xl shadow-sm focus:ring-1 outline-none md:min-w-[750px] md:max-w-[750px] "
         />
 
         {suggestions.length > 0 && (
-          <ul className="absolute left-0 right-0 mt-1 text-center border border-gray-200 rounded-b-xl shadow-md bg-white divide-y max-h-48 overflow-y-auto z-50">
+          <ul className="mt-1 text-center border border-gray-200 rounded-b-xl shadow-md bg-white divide-y max-h-48 overflow-y-auto z-50 md:min-w-[750px] md:max-w-[750px]">
             {suggestions.map((num) => (
               <li
                 key={num}
@@ -108,11 +111,11 @@ export default function ProductSearch() {
       </div>
 
       {!product ? (
-        <div className="min-h-[60vh] flex justify-center items-center w-full border-l border-r border-b border-gray-300 rounded-b-xl">
+        <div className="min-h-[60vh] w-full flex justify-center items-center border-l border-r border-b border-gray-300 rounded-b-xl md:min-w-[750px] md:max-w-[750px]">
           <img src={logo} alt="rent group logo" className="w-[60%] h-[50%]" />
         </div>
       ) : (
-        <div className="p-4 border-l border-r border-b border-gray-300 rounded-b-xl shadow-lg bg-white text-center">
+        <div className="p-4 border-l border-r border-b border-gray-300 rounded-b-xl shadow-lg bg-white text-center md:min-w-[750px] md:max-w-[750px]">
           <div className="flex justify-between">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -147,10 +150,9 @@ export default function ProductSearch() {
                 ></path>
               </svg>
             </button>
-            {/* modal */}
 
             <dialog id="reportModal" className="modal">
-              <div className="modal-action min-w-[450px] ">
+              <div className="w-full flex justify-center modal-action md:min-w-[550px]">
                 <form
                   onSubmit={handleSubmit(onSubmit)}
                   className="modal-box flex flex-col gap-4"
@@ -159,16 +161,9 @@ export default function ProductSearch() {
                     Problem mit dem Artikel melden
                   </h3>
 
-                  <input
-                    type="text"
-                    placeholder="Gib deinen Namen ein"
-                    {...register("reportedBy", { required: true })}
-                    className="input input-bordered w-full"
-                  />
-
                   <textarea
                     placeholder="Beschreibe das Problem bzw. den Fehler mit dem Artikel"
-                    {...register("reason", { required: true })}
+                    {...register("message", { required: true })}
                     className="textarea textarea-bordered w-full"
                   />
 
@@ -203,7 +198,7 @@ export default function ProductSearch() {
             <img
               src={`${product.image}?v=${Date.now()}`}
               alt={`Product ${product.productNumber}`}
-              className="w-full max-h-[100%] object-contain rounded-md"
+              className="mx-auto w-[70%] object-contain rounded-md"
               onError={() => setImageError(true)}
             />
           ) : product.imageReported ? (
@@ -241,16 +236,21 @@ export default function ProductSearch() {
                 Verwandte Produkte
               </h3>
               <div
-                className={`flex ${
-                  product.relatedProduct.length <= 3
-                    ? "justify-center gap-4"
-                    : "justify-start gap-4 overflow-x-auto"
+                className={`flex gap-4 ${
+                  product.relatedProduct.length === 1
+                    ? "justify-center overflow-visible"
+                    : product.relatedProduct.length === 2 ||
+                      product.relatedProduct.length === 3
+                    ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
+                    : product.relatedProduct.length === 3
+                    ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
+                    : "justify-start overflow-x-auto"
                 }`}
               >
                 {product.relatedProduct.map((rp) => (
                   <div
                     key={rp._id}
-                    className="inline-flex flex-col min-w-[150px] p-2 border rounded-xl shadow-sm hover:shadow-md cursor-pointer"
+                    className="inline-flex flex-col min-w-[200px] p-2 border rounded-xl shadow-sm hover:shadow-md cursor-pointer"
                     onClick={() => {
                       setProductId(rp.productNumber);
                       setInputValue(rp.productNumber);

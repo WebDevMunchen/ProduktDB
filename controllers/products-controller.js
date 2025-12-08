@@ -1,8 +1,8 @@
-const Product = require("../models/product-model");
 const asyncWrapper = require("../utils/asyncWrapper");
 const nodemailer = require("nodemailer");
 const ErrorResponse = require("../utils/errorResponse");
 const User = require("../models/user-model");
+const Product = require("../models/products-model");
 
 const getAllProducts = asyncWrapper(async (req, res, next) => {
   const products = await Product.find({}).populate("relatedProduct");
@@ -30,7 +30,6 @@ const getProductList = asyncWrapper(async (req, res, next) => {
 
   res.status(200).json(products);
 });
-
 
 const getProductInfo = asyncWrapper(async (req, res, next) => {
   const { productNumber } = req.params;
@@ -61,13 +60,13 @@ const getProductPreview = asyncWrapper(async (req, res, next) => {
 const deleteProduct = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
 
-  const product = await Product.findByIdAndDelete(id)
+  const product = await Product.findByIdAndDelete(id);
 
   if (!product) {
     throw new ErrorResponse("Product not found!", 404);
   }
 
-  res.status(200).json({message: "Product deleted!"});
+  res.status(200).json({ message: "Product deleted!" });
 });
 
 const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
@@ -116,32 +115,16 @@ const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
 
   product.imageReported = true;
   product.reportedAt = Date.now();
-  product.reportedBy = user.userId;
+  product.reportedBy = user.firstName + " " + user.lastName;
   product.currentStatus = "neu";
+  product.reportersId = user.userId;
+  product.reportersLocation = user.location;
+  product.reportersDepartment = user.department;
   await product.save();
 
   res
     .status(200)
     .json({ message: `Product #${productNumber} reported successfully` });
-});
-
-const reportIssue = asyncWrapper(async (req, res, next) => {
-  const { productNumber } = req.params;
-  const { reportedBy, reason } = req.body;
-
-  const product = await Product.findOne({ productNumber });
-
-  if (!product) {
-    throw new ErrorResponse("Product not found!", 404);
-  }
-
-  product.reportedIssues.push({ reportedBy, reason });
-  await product.save();
-
-  res.status(200).json({
-    message: `Report added successfully for product #${productNumber}`,
-    reportedIssues: product.reportedIssues,
-  });
 });
 
 const updateStatus = asyncWrapper(async (req, res, next) => {
@@ -165,7 +148,7 @@ const createProduct = asyncWrapper(async (req, res, next) => {
     storageLocation,
     notes,
     relatedProduct,
-    internProduct
+    internProduct,
   } = req.body;
 
   const findProduct = await Product.findOne({ productNumber });
@@ -181,16 +164,15 @@ const createProduct = asyncWrapper(async (req, res, next) => {
     storageLocation,
     notes,
     relatedProduct,
-    internProduct
-
+    internProduct,
   });
 
   res.status(201).json(product);
 });
 
 const updateProduct = asyncWrapper(async (req, res, next) => {
-  const {id} = req.params
-  const {productNumber: pNumber} = req.params
+  const { id } = req.params;
+  const { productNumber: pNumber } = req.params;
   const {
     productNumber,
     title,
@@ -198,8 +180,7 @@ const updateProduct = asyncWrapper(async (req, res, next) => {
     storageLocation,
     notes,
     relatedProduct,
-    internProduct
-
+    internProduct,
   } = req.body;
 
   const findProduct = await Product.findOne({ pNumber });
@@ -215,8 +196,7 @@ const updateProduct = asyncWrapper(async (req, res, next) => {
     storageLocation,
     notes,
     relatedProduct,
-    internProduct
-
+    internProduct,
   });
 
   res.status(201).json(updatedProduct);
@@ -227,10 +207,9 @@ module.exports = {
   getAllProducts,
   getProductList,
   reportMissingPhoto,
-  reportIssue,
   updateStatus,
   createProduct,
   getProductPreview,
   deleteProduct,
-  updateProduct
+  updateProduct,
 };

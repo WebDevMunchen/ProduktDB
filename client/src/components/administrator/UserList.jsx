@@ -97,45 +97,44 @@ export default function UserList() {
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="pl-6 py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                     >
                       Name
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                     >
                       Benutzer-ID
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                     >
                       Standort
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                     >
                       Department
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-left text-sm font-medium text-gray-500 tracking-wider"
                     >
                       Rolle
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-left text-sm font-medium text-gray-500 tracking-wider w-[200px]"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-center   text-sm font-medium text-gray-500   tracking-wider"
+                      className="py-3 text-center   text-sm font-medium text-gray-500 tracking-wider w-[150px]"
                     >
-                      Verwaltung
                     </th>
                   </tr>
                 </thead>
@@ -155,7 +154,7 @@ export default function UserList() {
                       return (
                         <tr
                           key={user._id}
-                          className="hover:bg-gray-50 transition-colors duration-150"
+                          className="hover:bg-gray-100 transition-colors duration-150"
                         >
                           <UserCard user={user} setAllUsers={setAllUsers} searchParameter={searchParameter} location={location}/>
                         </tr>
