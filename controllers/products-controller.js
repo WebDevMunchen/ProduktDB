@@ -11,7 +11,7 @@ const getAllProducts = asyncWrapper(async (req, res, next) => {
 });
 
 const getProductList = asyncWrapper(async (req, res, next) => {
-  const { skip = 0, limit = 10, search = "" } = req.query;
+  const { skip = 0, limit = 100, search = "" } = req.query;
 
   const filter = {};
 

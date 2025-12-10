@@ -14,7 +14,7 @@ export default function Products() {
   const [productList, setProductList] = useState([]);
   const [skip, setSkip] = useState(0);
   const [searchInput, setSearchInput] = useState("");
-  const limit = 10;
+  const limit = 100;
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
 
@@ -26,9 +26,9 @@ const fetchProducts = async (reset = false) => {
     );
 
     if (reset) {
-      setProductList(response.data); // overwrite
+      setProductList(response.data);
     } else {
-      setProductList(prev => [...prev, ...response.data]); // append
+      setProductList(prev => [...prev, ...response.data]); 
     }
   } catch (err) {
     console.error(err);
@@ -67,6 +67,7 @@ const fetchProducts = async (reset = false) => {
     container?.addEventListener("scroll", handleScroll);
     return () => container?.removeEventListener("scroll", handleScroll);
   }, [loading]);
+
 
   return (
     <div className="flex">
@@ -177,6 +178,8 @@ const fetchProducts = async (reset = false) => {
             </div>
           </div>
         )}
+
+        
       </div>
     </div>
   );

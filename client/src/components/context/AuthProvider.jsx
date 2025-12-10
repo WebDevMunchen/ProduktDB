@@ -55,7 +55,6 @@ export default function AuthProvider({ children }) {
     axiosClient
       .get("/productReports/getAllProductReports")
       .then((response) => {
-        console.log(response.data)
         setAllMissingProductReports(response.data);
       })
       .catch((error) => {

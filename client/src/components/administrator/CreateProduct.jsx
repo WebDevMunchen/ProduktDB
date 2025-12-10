@@ -92,7 +92,7 @@ export default function CreateProduct() {
         navigate("/admin/artikel");
       })
       .catch((error) => {
-        toast.error("Something went wrong!");
+        toast.error("Artikelnummer schon vorhanden!");
       })
   };
 
