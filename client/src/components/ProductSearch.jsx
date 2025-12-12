@@ -233,7 +233,7 @@ export default function ProductSearch() {
           {product.relatedProduct?.length > 0 && (
             <div className="mt-8">
               <h3 className="text-lg font-semibold text-gray-700 mb-4">
-                Verwandte Produkte
+                Verwandte/Zugehörige Artikel
               </h3>
               <div
                 className={`flex gap-4 ${
