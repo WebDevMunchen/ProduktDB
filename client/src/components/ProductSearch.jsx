@@ -83,8 +83,6 @@ export default function ProductSearch() {
       });
   };
 
-console.log(product)
-
   return (
     <div className="px-4 mx-auto my-10 font-sans md:min-w-[750px] md:max-w-[750px]">
       <div className="w-full">
