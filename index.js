@@ -3,6 +3,8 @@ require("./db.js");
 
 const port = process.env.PORT || 3000;
 
+const path = require("path");
+
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -24,9 +26,15 @@ app.use(
 );
 app.use(cookieParser());
 
+app.use(express.static(path.resolve(__dirname, "client", "dist")));
+
 app.use("/api/user", userRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/productReports", productReportsRouter);
+
+app.use(/(.*)/, (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.use(errorHandler);
 

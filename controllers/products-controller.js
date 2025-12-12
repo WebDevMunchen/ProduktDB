@@ -100,8 +100,8 @@ const reportMissingPhoto = asyncWrapper(async (req, res, next) => {
       address: process.env.USER,
     },
     to: process.env.EMAIL_ISSUE_HANDLER,
-    subject: "Missing Photo A",
-    text: "Missing Photo B",
+    subject: "Missing Photo",
+    text: "Missing Photo",
     html: `
       <p>The following product is missing a photo:</p>
       <ul>
