@@ -181,7 +181,8 @@ export default function Register() {
                       className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md hover:cursor-pointer"
                     >
                       <option value="IT & Services">IT & Services</option>
-                      <option value="Logistik">Logistik</option>
+                      <option value="Lagerlogistik">Lagerlogistik</option>
+                      <option value="Projektmanagement">Projektmanagement</option>
                       <option value="Vertrieb">Vertrieb</option>
                     </select>
                   </div>

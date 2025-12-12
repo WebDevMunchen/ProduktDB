@@ -35,14 +35,14 @@ const reportMissingProduct = asyncWrapper(async (req, res, next) => {
 
   const mailOptions = {
     from: {
-      name: "Missing Photo",
+      name: "Missing Product in the Database",
       address: process.env.USER,
     },
     to: process.env.EMAIL_ISSUE_HANDLER,
-    subject: "Missing Photo A",
-    text: "Missing Photo B",
+    subject: "Missing Product in the Database",
+    text: "Missing Product in the Database",
     html: `
-      <p>${product.reportedBy} says that the following product is missing in the database:</p>
+      <p>${product.reportedBy} reports that the following product is missing in the database:</p>
       <ul>
         <li>${product.productNumber}</li>
       </ul>
@@ -72,7 +72,7 @@ const reportIssue = asyncWrapper(async (req, res, next) => {
     reportersId: user.userId,
     reportersLocation: user.location,
     reportersDepartment: user.department,
-    reportType: "issue",
+    reportType: "Meldung",
     message,
   });
 
@@ -89,16 +89,17 @@ const reportIssue = asyncWrapper(async (req, res, next) => {
 
   const mailOptions = {
     from: {
-      name: "Missing Photo",
+      name: "Product report",
       address: process.env.USER,
     },
     to: process.env.EMAIL_ISSUE_HANDLER,
-    subject: "Missing Photo A",
-    text: "Missing Photo B",
+    subject: "Product report",
+    text: "Product report",
     html: `
       <p>${product.reportedBy} says that the following product is having misleading information:</p>
       <ul>
         <li>${product.productNumber}</li>
+        <li>${product.message}</li>
       </ul>
     `,
   };

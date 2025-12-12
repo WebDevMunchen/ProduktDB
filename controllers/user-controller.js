@@ -72,6 +72,7 @@ const updateUser = asyncWrapper(async (req, res, next) => {
     email,
     role,
     status,
+    lockableAccount,
   } = req.body;
 
   const user = await User.findById(id);
@@ -89,6 +90,8 @@ const updateUser = asyncWrapper(async (req, res, next) => {
     email,
     role,
     status,
+    lockableAccount,
+    failCount: 0
   });
 
   res.status(201).json(updatedUser);
@@ -112,11 +115,13 @@ const login = asyncWrapper(async (req, res, next) => {
   const match = await bcrypt.compare(password, user.password);
 
   if (!match) {
-    user.failCount++;
+    if (user.lockableAccount === "ja") {
+      user.failCount++;
 
-    if (user.failCount === 5) user.status = "gesperrt";
+      if (user.failCount === 5) user.status = "gesperrt";
 
-    await user.save();
+      await user.save();
+    }
 
     throw new ErrorResponse("Incorrect password!", 403);
   }

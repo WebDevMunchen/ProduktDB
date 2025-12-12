@@ -37,8 +37,14 @@ export default function UserUpdate() {
       department: "",
       role: "",
       status: "",
+      lockableAccount: "",
     },
   });
+
+  const { register: registerPassword, handleSubmit: handleSubmitPasswordForm } =
+    useForm({
+      defaultValues: { password: "" },
+    });
 
   useEffect(() => {
     axiosClient
@@ -160,13 +166,13 @@ export default function UserUpdate() {
                   </div>
                   <form
                     className="pt-4"
-                    onSubmit={handleSubmit(onSubmitPassword)}
+                    onSubmit={handleSubmitPasswordForm(onSubmitPassword)}
                   >
                     <label className="block text-xl font-medium mb-3 text-left">
                       Kennwort
                     </label>
                     <input
-                      {...register("password", { required: true })}
+                      {...registerPassword("password", { required: true })}
                       type={passwordVisible ? "text" : "password"}
                       placeholder="••••••••••••"
                       className="input input-bordered w-full"
@@ -331,14 +337,17 @@ export default function UserUpdate() {
                         className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md hover:cursor-pointer"
                       >
                         <option value="IT & Services">IT & Services</option>
-                        <option value="Logistik">Logistik</option>
+                        <option value="Lagerlogistik">Lagerlogistik</option>
+                        <option value="Projektmanagement">
+                          Projektmanagement
+                        </option>
                         <option value="Vertrieb">Vertrieb</option>
                       </select>
                     </div>
                   </div>
                 </div>
                 <div className="-mx-3 flex flex-wrap">
-                  <div className="w-full px-3 sm:w-1/2">
+                  <div className="w-full px-3 sm:w-1/3">
                     <div className="mb-5">
                       <label
                         htmlFor="role"
@@ -356,10 +365,10 @@ export default function UserUpdate() {
                       </select>
                     </div>
                   </div>
-                  <div className="w-full px-3 sm:w-1/2">
+                  <div className="w-full px-3 sm:w-1/3">
                     <div className="mb-5">
                       <label
-                        htmlFor="department"
+                        htmlFor="status"
                         className="mb-3 block text-base font-medium text-[#07074D]"
                       >
                         Status
@@ -373,6 +382,25 @@ export default function UserUpdate() {
                         <option value="inaktiv">Inaktiv</option>
                         <option value="gesperrt">Gesperrt</option>
                         <option value="ausstehend">Ausstehend</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="w-full px-3 sm:w-1/3">
+                    <div className="mb-5">
+                      <label
+                        htmlFor="lockableAccount"
+                        className="mb-3 block text-base font-medium text-[#07074D]"
+                      >
+                        Kontosperrung möglich?
+                      </label>
+                      <select
+                        {...register("lockableAccount", { required: true })}
+                        id="lockableAccount"
+                        className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md hover:cursor-pointer"
+                      >
+                        <option value="ja">Ja</option>
+                        <option value="nein">Nein</option>
                       </select>
                     </div>
                   </div>

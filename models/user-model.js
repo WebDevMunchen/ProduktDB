@@ -9,6 +9,7 @@ const userSchema = new Schema({
   lastName: { type: String, required: true },
   location: { type: String, required: true },
   department: { type: String, required: true },
+  lockableAccount: { type: String, enum: ["ja", "nein"], default: "ja" },
   failCount: {type: Number, default: 0},
   role: { type: String, enum: ["user", "mucAdmin"], default: "user" },
   status: {
