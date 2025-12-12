@@ -57,7 +57,7 @@ export default function ProductSearch() {
 
   const handleFocus = () => {
     setInputValue("");
-    setProductId("");
+    setProductId(0);
     setSuggestions([]);
   };
 
@@ -82,6 +82,8 @@ export default function ProductSearch() {
         toast.error("Fehlgeschlagen!");
       });
   };
+
+console.log(product)
 
   return (
     <div className="px-4 mx-auto my-10 font-sans md:min-w-[750px] md:max-w-[750px]">
