@@ -4,38 +4,56 @@ import logo from "../assets/rent_group_logo.jpg";
 import axiosClient from "./utils/axiosClient";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import useDebounce from "./utils/debounce";
+
 export default function ProductSearch() {
-  const { setProductId, product, allProducts, productId } =
-    useContext(AuthContext);
+  const { setProductId, product, productId } = useContext(AuthContext);
 
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [justSelected, setJustSelected] = useState(false);
+
+  const debouncedInput = useDebounce(inputValue, 300);
 
   useEffect(() => {
     setImageError(false);
   }, [product]);
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    setInputValue(value);
+  useEffect(() => {
+    const q = debouncedInput.trim();
 
-    if (value === "") {
+    if (justSelected || !q) {
       setSuggestions([]);
       return;
     }
 
-    const filtered = allProducts
-      ?.filter((p) => p.productNumber?.toString().startsWith(value))
-      .map((p) => p.productNumber);
+    let cancelled = false;
 
-    setSuggestions(filtered || []);
+    axiosClient
+      .get("/products/searchProductsByTitle", { params: { q } })
+      .then((response) => {
+        if (!cancelled) setSuggestions(response.data);
+      })
+      .catch(() => {
+        if (!cancelled) setSuggestions([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedInput, justSelected]);
+
+  const handleChange = (e) => {
+    setJustSelected(false);
+    setInputValue(e.target.value);
   };
 
-  const handleSelect = (number) => {
-    setProductId(number);
-    setInputValue(number);
+  const handleSelect = (p) => {
+    setJustSelected(true);
+    setProductId(p.productNumber);
+    setInputValue(String(p.productNumber));
     setSuggestions([]);
   };
 
@@ -91,19 +109,20 @@ export default function ProductSearch() {
           value={inputValue}
           onChange={handleChange}
           onFocus={handleFocus}
-          placeholder="Gib die Artikelnummer ein"
-          className="w-full text-center py-2 text-lg border border-gray-300 rounded-t-xl shadow-sm focus:ring-1 outline-none md:min-w-[750px] md:max-w-[750px] "
+          placeholder="Gib die Artikelnummer oder den Titel ein"
+          className="w-full text-center py-2 text-lg border border-gray-300 rounded-t-xl shadow-sm focus:ring-1 outline-none md:min-w-[750px] md:max-w-[750px]"
         />
 
         {suggestions.length > 0 && (
           <ul className="mt-1 text-center border border-gray-200 rounded-b-xl shadow-md bg-white divide-y max-h-48 overflow-y-auto z-50 md:min-w-[750px] md:max-w-[750px]">
-            {suggestions.map((num) => (
+            {suggestions.map((p) => (
               <li
-                key={num}
+                key={p._id}
                 className="py-2 hover:bg-blue-50 cursor-pointer transition"
-                onClick={() => handleSelect(num)}
+                onClick={() => handleSelect(p)}
               >
-                {num}
+                <span className="font-semibold">{p.productNumber}</span> –{" "}
+                {p.title}
               </li>
             ))}
           </ul>
@@ -240,11 +259,11 @@ export default function ProductSearch() {
                   product.relatedProduct.length === 1
                     ? "justify-center overflow-visible"
                     : product.relatedProduct.length === 2 ||
-                      product.relatedProduct.length === 3
-                    ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
-                    : product.relatedProduct.length === 3
-                    ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
-                    : "justify-start overflow-x-auto"
+                        product.relatedProduct.length === 3
+                      ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
+                      : product.relatedProduct.length === 3
+                        ? "justify-start overflow-x-auto md:justify-center md:overflow-visible"
+                        : "justify-start overflow-x-auto"
                 }`}
               >
                 {product.relatedProduct.map((rp) => (
@@ -252,8 +271,9 @@ export default function ProductSearch() {
                     key={rp._id}
                     className="inline-flex flex-col min-w-[200px] p-2 border rounded-xl shadow-sm hover:shadow-md cursor-pointer"
                     onClick={() => {
+                      setJustSelected(true);
                       setProductId(rp.productNumber);
-                      setInputValue(rp.productNumber);
+                      setInputValue(String(rp.productNumber));
                     }}
                   >
                     {rp.internProduct === true ? (

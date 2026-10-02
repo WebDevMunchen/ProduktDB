@@ -124,7 +124,7 @@ const fetchProducts = async (reset = false) => {
                 ref={containerRef}
                 className="overflow-x-auto min-h-[calc(100vh-235px)] max-h-[calc(100vh-235px)] overflow-y-scroll"
               >
-                <table className="w-full bg-white shadow-md rounded-md border-t border-gray-200 w-full">
+                <table className="w-full bg-white shadow-md rounded-md border-t border-gray-200">
                   <thead className="bg-gray-50">
                     <tr className="border-b">
                       <th className="px-6 py-4 text-left text-gray-600 font-medium w-[50%]">
@@ -151,7 +151,7 @@ const fetchProducts = async (reset = false) => {
                   </tbody>
                 </table>
                 {loading && (
-                  <div className="flex justify-center mt-6 py-3 px-4 flex flex-row gap-2">
+                  <div className="flex justify-center mt-6 py-3 px-4 flex-row gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce"></div>
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.3s]"></div>
                     <div className="w-2 h-2 rounded-full bg-blue-500 animate-bounce [animation-delay:-.5s]"></div>

@@ -9,6 +9,7 @@ const {
   getProductPreview,
   deleteProduct,
   updateProduct,
+  searchProductsByTitle,
 } = require("../controllers/products-controller");
 const { authenticate, authorize } = require("../middlewares/authentication");
 
@@ -19,6 +20,9 @@ productsRouter
   .route("/createProduct")
   .post(authenticate, authorize("mucAdmin"), createProduct);
 productsRouter.route("/getProductList").get(authenticate, getProductList);
+productsRouter
+  .route("/searchProductsByTitle")
+  .get(authenticate, searchProductsByTitle);
 productsRouter
   .route("/getProductInfo/:productNumber")
   .get(authenticate, getProductInfo);

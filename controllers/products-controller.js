@@ -45,6 +45,38 @@ const getProductInfo = asyncWrapper(async (req, res, next) => {
   res.status(200).json(product);
 });
 
+const searchProductsByTitle = asyncWrapper(async (req, res, next) => {
+  const { q } = req.query;
+
+  if (!q || !q.trim()) {
+    return res.status(200).json([]);
+  }
+
+  const trimmed = q.trim();
+
+  const escaped = trimmed.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+  const conditions = [{ title: { $regex: escaped, $options: "i" } }];
+
+  if (/^\d+$/.test(trimmed)) {
+    conditions.push({
+      $expr: {
+        $regexMatch: {
+          input: { $toString: "$productNumber" },
+          regex: `^${trimmed}`,
+        },
+      },
+    });
+  }
+
+  const products = await Product.find({ $or: conditions })
+    .select("productNumber title")
+    .sort({ productNumber: 1 })
+    .limit(20);
+
+  res.status(200).json(products);
+});
+
 const getProductPreview = asyncWrapper(async (req, res, next) => {
   const { id } = req.params;
 
@@ -212,4 +244,5 @@ module.exports = {
   getProductPreview,
   deleteProduct,
   updateProduct,
+  searchProductsByTitle
 };
